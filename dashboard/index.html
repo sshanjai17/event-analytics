@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+
+    <title>Event Analytics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        margin: 2rem auto;
+        max-width: 900px;
+      }
+      h1 {
+        font-size: 1.4rem;
+      }
+      .row {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
+      }
+      .card {
+        flex: 1;
+        min-width: 380px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Analytics — demo_123</h1>
+    <div class="card"><canvas id="daily"></canvas></div>
+    <div class="row">
+      <div class="card"><canvas id="pages"></canvas></div>
+      <div class="card"><canvas id="types"></canvas></div>
+    </div>
+
+    <script>
+      const API = "http://127.0.0.1:8000/stats/demo_123";
+
+      async function load() {
+        const [daily, pages, types] = await Promise.all([
+          fetch(`${API}/daily`).then((r) => r.json()),
+          fetch(`${API}/top-pages`).then((r) => r.json()),
+          fetch(`${API}/event-types`).then((r) => r.json()),
+        ]);
+
+        new Chart(document.getElementById("daily"), {
+          type: "line",
+          data: {
+            labels: daily.map((d) => d.day),
+            datasets: [
+              {
+                label: "Daily page views",
+                data: daily.map((d) => d.views),
+                tension: 0.3,
+              },
+            ],
+          },
+        });
+
+        new Chart(document.getElementById("pages"), {
+          type: "bar",
+          data: {
+            labels: pages.map((p) => p.page),
+            datasets: [{ label: "Top pages", data: pages.map((p) => p.views) }],
+          },
+          options: { indexAxis: "y" },
+        });
+
+        new Chart(document.getElementById("types"), {
+          type: "doughnut",
+          data: {
+            labels: types.map((t) => t.event_type),
+            datasets: [{ data: types.map((t) => t.count) }],
+          },
+        });
+      }
+      load();
+    </script>
+  </body>
+</html>

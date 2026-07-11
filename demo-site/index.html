@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Demo Blog</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        max-width: 600px;
+        margin: 3rem auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>My Demo Blog</h1>
+    <p>A pretend client website using our analytics.</p>
+    <button>Like this post</button>
+    <button onclick="analytics.track('subscribe', { plan: 'free' })">
+      Subscribe
+    </button>
+    <a href="#section2">Jump to section 2</a>
+    <script src="../tracker/tracker.js" data-key="demo_123"></script>
+  </body>
+</html>
